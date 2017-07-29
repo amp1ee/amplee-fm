@@ -12,10 +12,6 @@
 <a href="service">Contact us</a>
 <a href="player">Player</a>
 
-    <p>Current track: <span id="track-title">LIVE</span></p>
-    <p>Listeners: <span id="listeners">00</span></p>
-
-
 </div>
 
 </body>

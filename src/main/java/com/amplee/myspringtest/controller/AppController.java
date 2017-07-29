@@ -1,41 +1,35 @@
 package com.amplee.myspringtest.controller;
 
+import com.amplee.myspringtest.config.application.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class AppController {
 
     @RequestMapping("/")
-    public String hello(Model model){
+    public String hello(HttpServletRequest request, Model model){
 
-        model.addAttribute("hello", "Hello my first Spring App!");
-        return "hello";
-
-    }
-
-    @RequestMapping("/service")
-    public String service(Model model) {
-
-        model.addAttribute("service", "This is just bullshit");
-        return "service";
+        //Double currentTimeZone = Util.getBrowserTimeZone(request);
+        //System.out.println("currentTimeZone: "+currentTimeZone);
+        //return Util.checkCookie(request, currentTimeZone, model);
+        return "player";
     }
 
     @RequestMapping("/player")
-    public void player(Model model) {
-
+    public String player() {
+        return "player";
     }
 
     @RequestMapping("/titles")
     public void titles(Model model) {
 
     }
+
 }
