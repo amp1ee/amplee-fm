@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="webaudioapi" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/web/waa.d.ts" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <***REMOVED*** url="file://$PROJECT_DIR$/web/waa.d.ts" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

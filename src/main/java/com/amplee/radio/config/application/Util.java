@@ -1,4 +1,4 @@
-package com.amplee.myspringtest.config.application;
+package com.amplee.radio.config.application;
 
 import org.springframework.ui.Model;
 

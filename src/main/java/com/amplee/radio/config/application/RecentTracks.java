@@ -1,15 +1,11 @@
-package com.amplee.myspringtest.config.application;
+package com.amplee.radio.config.application;
 
 import com.google.gson.*;
 import org.springframework.web.util.UriUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -25,6 +21,11 @@ public class RecentTracks implements Serializable {
     private static final char c = 9899;
     private static final String circle = " " + c + " ";
     private static final String defImage = "./skin/image/songinfo.jpeg";
+    private static final String defImgTag = "<img align=\"middle\" src=\"" + defImage + "\">";
+    private static final String defCover = "./skin/image/music-elems.png";
+    private static final String defCoverTag = "<img align=\"middle\" width=\"110\" src=\"" + defCover + "\">";
+    private static String curImage = "./skin/image/music-elems.png";
+    private static String curImgTag = "<img align=\"middle\" width=\"110\" src=\"" + curImage + "\">";
 
     private final TimeZone tz = new GregorianCalendar().getTimeZone();       // Server's time zone
     private final LocalDateTime dt = LocalDateTime.now();                   // time now
@@ -54,6 +55,24 @@ public class RecentTracks implements Serializable {
             }
         }
         return localInstance;
+    }
+
+    public static String getDefCoverImage() {
+        return defImgTag;
+    }
+
+    public String getCurCoverImage() {
+
+        return curImgTag;
+    }
+
+    String get;
+    public void setCurImage(String curTrack) {
+        get = getImageTag(curTrack, true);
+        if (get.equals("<img width=\"110\" align=\"middle\" src=\"\">")) {
+            curImgTag = defCoverTag;
+        } else
+            curImgTag = get;
     }
 
     public ArrayList<String> getTitles(Double offset) {
@@ -138,12 +157,16 @@ public class RecentTracks implements Serializable {
     }
 
     public String getImageTag(String title) {
+        return getImageTag(title, false);
+    }
+
+    public String getImageTag(String title, boolean cover) {
+
         title = title.substring(title.indexOf(c) + 1, title.length());  //Cutting out the time info;
-        //System.out.println(title);
-        String[]
-        split = title.split("-");
+        String[] split = title.split("-");
         String cartist = split[0].trim();
         String ctrack;
+
         try {
             ctrack = split[1].trim();
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -154,7 +177,7 @@ public class RecentTracks implements Serializable {
         String cTrackEnc = null;
         try {
             cArtistEnc = UriUtils.encode(cartist, "UTF-8");
-            cTrackEnc = UriUtils.encode(ctrack,"UTF-8");
+            cTrackEnc = UriUtils.encode(ctrack, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -162,53 +185,78 @@ public class RecentTracks implements Serializable {
         String apiKey = "bb5f88ff636419e6661edcccfd116638";
         String urlTrack, urlArtist;
         String baseUrl = "http://ws.audioscrobbler.com/2.0/";
-
         urlArtist = baseUrl.concat("?method=artist.getInfo&" +
                 "artist=" + cArtistEnc +
-                "&api_key=" + apiKey +"&format=json");
-        urlTrack = urlArtist.replace("=artist","=track").concat("&track=" + cTrackEnc);
+                "&api_key=" + apiKey + "&format=json");
+        urlTrack = urlArtist.replace("=artist", "=track").concat("&track=" + cTrackEnc);
 
         String imgTag = null;
 
-        if (!imgUrlsMap.containsKey(title)) {
-            try {
-                imgTag = parseJson(urlTrack, false);
-            } catch (Exception e) {
-                e.getMessage();
+        if (!cover) {
+
+            if (!imgUrlsMap.containsKey(title)) {
+
+                imgTag = handleTag(urlArtist, urlTrack);
+
+                if (imgTag == null || imgTag.trim().equals("<img align=\"middle\" src=\"\">"))
+                    imgUrlsMap.put(title, defImgTag);
+                else
+                    imgUrlsMap.put(title, imgTag);
+
             }
-            if (imgTag != null) {
-                if (!imgTag.trim().equals("<img src=\"\">")) {
-                    imgTag = imgTag.replace("https", "http");
-                } else {
-                    try {
-                        imgTag = parseJson(urlArtist, true);
-                    } catch (Exception e) {
-                        e.getMessage();
-                    }
-                }
-            } else {
+
+            return imgUrlsMap.get(title);
+
+        } else {    //(if cover image)
+
+            try {
+                imgTag = handleTag(urlArtist, urlTrack, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return imgTag != null ? imgTag : defCoverTag;
+        }
+
+    }
+
+    private String handleTag(String urlArtist, String urlTrack) {
+        return handleTag(urlArtist, urlTrack, false);
+    }
+
+    private String handleTag(String urlArtist, String urlTrack, boolean cover) {
+        String imgTag = null;
+        try {
+            imgTag = parseJson(urlTrack, false, cover);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+        if (imgTag != null) {
+            if (imgTag.trim().equals("<img align=\"middle\" src=\"\">")) {
+
                 try {
-                    imgTag = parseJson(urlArtist, true);
+                    imgTag = parseJson(urlArtist, true, cover);
                 } catch (Exception e) {
                     e.getMessage();
                 }
             }
+        } else {
+            try {
+                imgTag = parseJson(urlArtist, true, cover);
 
-            String defImgTag = "<img src=\"" + defImage + "\">";
-
-            if (imgTag == null)
-                imgUrlsMap.put(title, defImgTag);
-            else if (imgTag.trim().equals("<img src=\"\">"))
-                imgUrlsMap.put(title, defImgTag);
-            else
-                imgUrlsMap.put(title, imgTag);
-
+            } catch (Exception e) {
+                e.getMessage();
+            }
         }
 
-        return imgUrlsMap.get(title);
+        if (imgTag!=null && !imgTag.trim().equals("<img align=\"middle\" src=\"\">"))
+            imgTag = imgTag.replace("https", "http");
+
+        return imgTag;
     }
 
-    private String parseJson(String urlPath, boolean isMethodArtist) throws Exception {
+    private String parseJson(String urlPath, boolean isMethodArtist, boolean cover) throws Exception {
         JsonParser parser = new JsonParser();
         String json = readUrl(urlPath);
         JsonElement element = parser.parse(json);
@@ -216,7 +264,7 @@ public class RecentTracks implements Serializable {
         JsonArray imgArr = null;
 
         if (!isMethodArtist) {
-            //System.out.println("track.getInfo() " + urlPath);
+
             try {
                 jobj = jobj.getAsJsonObject("track");
                 jobj = jobj.getAsJsonObject("album");
@@ -224,27 +272,42 @@ public class RecentTracks implements Serializable {
             } catch (NullPointerException e) {
                 e.getMessage();
             }
-            return checkImgArr(imgArr);
+            if (!cover)
+                return checkImgArr(imgArr, false);
+            else
+                return checkImgArr(imgArr, true);
 
         } else {
-            //System.out.println("artist.getInfo() " + urlPath);
-            imgArr = null;
 
+            imgArr = null;
             try {
                 jobj = jobj.getAsJsonObject("artist");
                 imgArr = jobj.getAsJsonArray("image");
             } catch (NullPointerException e) {
                 e.getMessage();
             }
-            return checkImgArr(imgArr);
+
+            if (!cover)
+                return checkImgArr(imgArr, false);
+            else
+                return checkImgArr(imgArr, true);
         }
     }
 
-    private String checkImgArr(JsonArray imgArr) {
+    private static final String _text = "#text";
+
+    private String checkImgArr(JsonArray imgArr, boolean cover) {
         if (imgArr != null) {
             JsonObject jobj = imgArr.get(0).getAsJsonObject();
-            String imgUrl = jobj.get("#text").toString();
-            return "<img src=" + imgUrl + ">";
+            String imgUrl = jobj.get(_text).toString();
+
+            JsonObject jCoverObj = imgArr.get(2).getAsJsonObject();
+            String coverUrl = jCoverObj.get(_text).toString();
+            if (!cover)
+                return "<img align=\"middle\" src=" + imgUrl + ">";
+            else
+                return "<img width=\"110\" align=\"middle\" src=" + coverUrl + ">";
+
         } else return null;
     }
 

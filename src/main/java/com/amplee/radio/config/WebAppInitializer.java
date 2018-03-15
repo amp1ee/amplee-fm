@@ -1,6 +1,6 @@
-package com.amplee.myspringtest.config;
+package com.amplee.radio.config;
 
-import com.amplee.myspringtest.config.application.WebConfig;
+import com.amplee.radio.config.application.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -16,6 +16,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/", "/player", "/titles", "/findTimeZonePage"};
+        return new String[]{"/", "/player", "/titles", "/findTimeZonePage", "/cover", "/loginpage", "/403", "/admin"};
     }
 }

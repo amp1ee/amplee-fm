@@ -1,4 +1,4 @@
-package com.amplee.myspringtest.config.application;
+package com.amplee.radio.config.application;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,4 +15,5 @@ public class ImgHashMap<K, V> extends LinkedHashMap<K, V> {
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         return size() > maxSize;
     }
+
 }
