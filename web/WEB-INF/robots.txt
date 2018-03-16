@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /titles
+Disallow: /findTimeZonePage
