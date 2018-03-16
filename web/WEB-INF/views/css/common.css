@@ -39,7 +39,7 @@ a {
   --player-bg2-color: #202224;
   --row-background: rgb(24, 24, 24);
   --logo-img: url("../skin/image/logo.png");
-  --hover-text-color: #cae805;
+  --hover-text-color: #cfe607;
   /*--hover-text-color: rgba(224, 179, 21, 0.8);*/
   --hover-alt-color: #197F14;
 
@@ -86,7 +86,7 @@ a {
   display: initial;
 }
 .gradient-icon:hover {
-  background: linear-gradient(180deg, #cae805, #e0b61a);
+  background: linear-gradient(180deg, #cae805, #3d3207);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: initial;
@@ -106,14 +106,14 @@ a {
 }
 .active > a:hover > span {
   border-bottom: 3px solid #cae805 !important;
-  border-top: 3px solid #cae805 !important;
+  border-top: 3px solid #363d02 !important;
   /*border-bottom: 3px solid var(--hover-text-color) !important;*/
   /*border-top: 3px solid var(--hover-text-color) !important;*/
 }
 
 .container-fluid {
   /*background: #dea437 !important;*/
-  background: linear-gradient(180deg, #cbe605, #f2c00c) !important;
+  background: linear-gradient(180deg, #b5cc06, #e6b30b) !important;
   /*background: linear-gradient(0, var(--hover-text-color), #dea437);*/
   box-shadow: none !important;
 }
@@ -324,7 +324,7 @@ a {
 .onclick-menu-content li > img {
   padding-right: 10px;
   pointer-events: none;
-  filter: grayScale(100%);
+  filter: grayScale(80%);
   vertical-align: middle;
 }
 .onclick-menu-content ul:first-child {
@@ -455,14 +455,15 @@ a {
 /* @end */
 
 .jp-play-bar {
-  background: url("../skin/image/jplayer.pink.flag2.png") 0px -280px repeat-x;
-  width: 0px;
+  background: url("../skin/image/jplayer.pink.flag2.png") 0 -280px repeat-x;
+  width: 0;
   height: 100%;
   overflow: hidden;
 }
 
 .jp-volume-controls {
   padding-top: 7px;
+  filter: grayScale(100%);
   position: absolute;
   -webkit-transform:translateZ(0);
   transform:translateZ(0);
@@ -520,7 +521,7 @@ a {
 }
 
 .jp-volume-bar {
-  background: url("../skin/image/jplayer.pink.flag2.png") 0px -300px repeat-x;
+  background: url("../skin/image/jplayer.pink.flag2.png") 0 -300px repeat-x;
   position: absolute;
   z-index: 10;
   height: 4px;

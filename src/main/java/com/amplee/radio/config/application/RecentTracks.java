@@ -12,11 +12,12 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
 
+@SuppressWarnings("unused")
 public class RecentTracks implements Serializable {
 
     private static volatile RecentTracks instance;
     private static Map<String, String> imgUrlsMap = new ImgHashMap<>(10);
-    private static final String vdash = "\\|";
+    private static final String vDash = "\\|";
     private static final String colon = ":";
     private static final char c = 9899;
     private static final String circle = " " + c + " ";
@@ -66,9 +67,8 @@ public class RecentTracks implements Serializable {
         return curImgTag;
     }
 
-    String get;
     public void setCurImage(String curTrack) {
-        get = getImageTag(curTrack, true);
+        String get = getImageTag(curTrack, true);
         if (get.equals("<img width=\"110\" align=\"middle\" src=\"\">")) {
             curImgTag = defCoverTag;
         } else
@@ -84,7 +84,7 @@ public class RecentTracks implements Serializable {
                         new FileInputStream(FILE_NAME), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] vDashSplit = line.split(vdash);
+                String[] vDashSplit = line.split(vDash);
                 String[] colonSplit = line.split(colon);
                 String title;
                 try {
@@ -162,27 +162,30 @@ public class RecentTracks implements Serializable {
 
     public String getImageTag(String title, boolean cover) {
 
-        title = title.substring(title.indexOf(c) + 1, title.length());  //Cutting out the time info;
+        title = title.substring(title.indexOf(c) + 1, title.length());  // Cutting out the time info;
         String[] split = title.split("-");
-        String cartist = split[0].trim();
-        String ctrack;
+        String cArtist = split[0].trim();
+        String cTrack;
 
         try {
-            ctrack = split[1].trim();
+            cTrack = split[1].trim();
         } catch (ArrayIndexOutOfBoundsException e) {
-            ctrack = "Untitled";
+            cTrack = "Untitled";
         }
 
         String cArtistEnc = null;
         String cTrackEnc = null;
         try {
-            cArtistEnc = UriUtils.encode(cartist, "UTF-8");
-            cTrackEnc = UriUtils.encode(ctrack, "UTF-8");
+            cArtistEnc = UriUtils.encode(cArtist, "UTF-8");
+            cTrackEnc = UriUtils.encode(cTrack, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        String apiKey = "bb5f88ff636419e6661edcccfd116638";
+        Scanner     sc;
+        String      apiKey;
+
+        apiKey = "bb5f88ff636419e6661edcccfd116638";
         String urlTrack, urlArtist;
         String baseUrl = "http://ws.audioscrobbler.com/2.0/";
         urlArtist = baseUrl.concat("?method=artist.getInfo&" +
@@ -260,15 +263,15 @@ public class RecentTracks implements Serializable {
         JsonParser parser = new JsonParser();
         String json = readUrl(urlPath);
         JsonElement element = parser.parse(json);
-        JsonObject jobj = element.getAsJsonObject();
+        JsonObject jObj = element.getAsJsonObject();
         JsonArray imgArr = null;
 
         if (!isMethodArtist) {
 
             try {
-                jobj = jobj.getAsJsonObject("track");
-                jobj = jobj.getAsJsonObject("album");
-                imgArr = jobj.getAsJsonArray("image");
+                jObj = jObj.getAsJsonObject("track");
+                jObj = jObj.getAsJsonObject("album");
+                imgArr = jObj.getAsJsonArray("image");
             } catch (NullPointerException e) {
                 e.getMessage();
             }
@@ -281,8 +284,8 @@ public class RecentTracks implements Serializable {
 
             imgArr = null;
             try {
-                jobj = jobj.getAsJsonObject("artist");
-                imgArr = jobj.getAsJsonArray("image");
+                jObj = jObj.getAsJsonObject("artist");
+                imgArr = jObj.getAsJsonArray("image");
             } catch (NullPointerException e) {
                 e.getMessage();
             }
@@ -298,8 +301,8 @@ public class RecentTracks implements Serializable {
 
     private String checkImgArr(JsonArray imgArr, boolean cover) {
         if (imgArr != null) {
-            JsonObject jobj = imgArr.get(0).getAsJsonObject();
-            String imgUrl = jobj.get(_text).toString();
+            JsonObject jObj = imgArr.get(0).getAsJsonObject();
+            String imgUrl = jObj.get(_text).toString();
 
             JsonObject jCoverObj = imgArr.get(2).getAsJsonObject();
             String coverUrl = jCoverObj.get(_text).toString();
