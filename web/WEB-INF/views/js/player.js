@@ -1,14 +1,9 @@
 var tit = '\xa0';
 var jP = $("#jquery_jplayer_1");
-var ip = 'localhost';
-$.get("https://ipinfo.io", function(response) {
-    console.log(response.ip);
-    ip = response.ip ? response.ip : 0;
-}, "jsonp");
-
+var host = 'amplee-fm.pp.ua';
 var port = '9000';
-var _mountPoint = 'live';
-var address = 'http://' + ip + ':' + port;
+var _mountPoint = '/live';
+var address = 'http://' + host + ':' + port;
 var mediaUrl = address + _mountPoint;
 var jsonUrl = address + '/json.xsl';
 var cur = 'amp';

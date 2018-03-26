@@ -21,11 +21,11 @@ public class RecentTracks implements Serializable {
     private static final String colon = ":";
     private static final char c = 9899;
     private static final String circle = " " + c + " ";
-    private static final String defImage = "./skin/image/songinfo.jpeg";
+    private static final String defImage = "./images/image/songinfo.jpeg";
     private static final String defImgTag = "<img align=\"middle\" src=\"" + defImage + "\">";
-    private static final String defCover = "./skin/image/music-elems.png";
+    private static final String defCover = "./images/image/music-elems.png";
     private static final String defCoverTag = "<img align=\"middle\" width=\"110\" src=\"" + defCover + "\">";
-    private static String curImage = "./skin/image/music-elems.png";
+    private static String curImage = "./images/image/music-elems.png";
     private static String curImgTag = "<img align=\"middle\" width=\"110\" src=\"" + curImage + "\">";
 
     private final TimeZone tz = new GregorianCalendar().getTimeZone();       // Server's time zone
