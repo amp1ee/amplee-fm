@@ -7,7 +7,7 @@ html, body {
 }
 
 body {
-  background: url('../skin/image/bg2_2.jpg') no-repeat !important;
+  background: url('../images/image/bg2_2.jpg') no-repeat !important;
   -webkit-background-size: cover !important;
   background-size: cover !important;
 }
@@ -38,7 +38,7 @@ a {
   --player-bg-color: #131415;
   --player-bg2-color: #202224;
   --row-background: rgb(24, 24, 24);
-  --logo-img: url("../skin/image/logo.png");
+  --logo-img: url("../images/image/logo.png");
   --hover-text-color: #cfe607;
   /*--hover-text-color: rgba(224, 179, 21, 0.8);*/
   --hover-alt-color: #197F14;
@@ -455,7 +455,7 @@ a {
 /* @end */
 
 .jp-play-bar {
-  background: url("../skin/image/jplayer.pink.flag2.png") 0 -280px repeat-x;
+  background: url("../images/image/jplayer.pink.flag2.png") 0 -280px repeat-x;
   width: 0;
   height: 100%;
   overflow: hidden;
@@ -521,7 +521,7 @@ a {
 }
 
 .jp-volume-bar {
-  background: url("../skin/image/jplayer.pink.flag2.png") 0 -300px repeat-x;
+  background: url("../images/image/jplayer.pink.flag2.png") 0 -300px repeat-x;
   position: absolute;
   z-index: 10;
   height: 4px;
@@ -539,7 +539,7 @@ a {
 }
 
 .jp-volume-bar-value {
-  background: url("../skin/image/jplayer.pink.flag2.png") 0 -320px repeat-x;
+  background: url("../images/image/jplayer.pink.flag2.png") 0 -320px repeat-x;
   height: 4px;
   z-index: 10;
 }

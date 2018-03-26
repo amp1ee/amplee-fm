@@ -1,3 +1,4 @@
 .idea/
 target/
 web/WEB-INF/classes/cred.prop
+web/WEB-INF/css/bootstrap*.css
