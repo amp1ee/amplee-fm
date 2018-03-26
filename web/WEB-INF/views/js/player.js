@@ -1,14 +1,20 @@
 var tit = '\xa0';
 var jP = $("#jquery_jplayer_1");
-var media = "http://***REMOVED***:9000/live";
+var ip = '';
+$.get("https://ipinfo.io", function(response) {
+    console.log(response.ip);
+    ip = response.ip;
+}, "jsonp")
+
+ip = (ip.length > 0) ? ip : '***REMOVED***';
+var port = '9000';
+var media = 'http://' + ip + ':' + port +'/live';
 var cur = 'amp';
 var space = String.fromCharCode(160);
 var rec = String.fromCharCode(9899);
-var refresh = '<i class="fa fa-refresh fa-spin fa-fw gradient-icon"></i>';
+/*var refresh = '<i class="fa fa-refresh fa-spin fa-fw gradient-icon"></i>';*/
 var fa = $(".fa");
-// this is the URL of the json.xml file located on your server.
-var url = 'http://***REMOVED***:9000/json.xsl';
-// this is your mountpoint's name, mine is called /radio
+var url = 'http://' + ip + ':' + port + '/json.xsl';
 var _mountPoint, p_width, marquee_dur;
 var p_marquee = $('.jp-title p');
 

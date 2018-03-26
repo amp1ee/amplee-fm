@@ -1,6 +1,8 @@
 package com.amplee.radio.config.application;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -12,10 +14,17 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableAspectJAutoProxy
 @EnableWebMvc
-
 @ComponentScan({"com.amplee.radio.*"})
-
+@PropertySource("classpath:/cred.prop")
 public class WebConfig extends WebMvcConfigurerAdapter {
+    private final
+    Environment     env;
+
+    @Autowired
+    public WebConfig(Environment env) {
+        this.env = env;
+    }
+
     @Bean
     public InternalResourceViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -36,8 +45,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
         driverManagerDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/users");
-        driverManagerDataSource.setUsername("***REMOVED***");
-        driverManagerDataSource.setPassword("***REMOVED***");
+        driverManagerDataSource.setUsername(env.getProperty("usr"));
+        driverManagerDataSource.setPassword(env.getProperty("pwd"));
         return driverManagerDataSource;
     }
 
@@ -49,7 +58,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/views/css/");
-        registry.addResourceHandler("/skin/**").addResourceLocations("/WEB-INF/views/skin/");
+        registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/views/images/");
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/views/js/");
         registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/views/images/");
         registry.addResourceHandler("/resources/**").addResourceLocations("/WEB-INF/views/resources/");

@@ -50,8 +50,8 @@ public class RecentTracks implements Serializable {
             synchronized (RecentTracks.class) {
                 localInstance = instance;
                 if (localInstance == null) {
-                    System.out.println("new RecentTracks() created");
                     instance = localInstance = new RecentTracks();
+                    System.out.println("Tracklist class instance initialized");
                 }
             }
         }
