@@ -60,8 +60,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/views/css/");
         registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/views/images/");
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/views/js/");
-        registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/views/images/");
         registry.addResourceHandler("/resources/**").addResourceLocations("/WEB-INF/views/resources/");
         registry.addResourceHandler("/robots.txt").addResourceLocations("/WEB-INF/robots.txt");
+        registry.addResourceHandler("/.well-known/acme-challenge/**")
+                .addResourceLocations("/WEB-INF/lets/");
     }
 }

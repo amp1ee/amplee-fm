@@ -147,11 +147,11 @@
   -ms-transform: scale(1, -1);
   transform: scale(1, -1);
 }
-:***REMOVED*** .fa-rotate-90,
-:***REMOVED*** .fa-rotate-180,
-:***REMOVED*** .fa-rotate-270,
-:***REMOVED*** .fa-flip-horizontal,
-:***REMOVED*** .fa-flip-vertical {
+:root .fa-rotate-90,
+:root .fa-rotate-180,
+:root .fa-rotate-270,
+:root .fa-flip-horizontal,
+:root .fa-flip-vertical {
   filter: none;
 }
 .fa-stack {

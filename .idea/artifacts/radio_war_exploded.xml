@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="radio:war exploded">
     <output-path>$PROJECT_DIR$/target/demo</output-path>
-    <***REMOVED*** id="***REMOVED***">
+    <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="radio" />
@@ -36,6 +36,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/demo/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="radio/web/Web" />
-    </***REMOVED***>
+    </root>
   </artifact>
 </component>

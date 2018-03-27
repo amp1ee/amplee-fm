@@ -14,20 +14,22 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class RecentTracks implements Serializable {
-
+    private static final String imgDir = "./images/image/";
+    private static final String tagOpenW = "<img align=\"middle\" width=\"110\" src=\"";
+    private static final String tagOpen = "<img align=\"middle\" src=\"";
+    private static final String tagClose = "\">";
     private static volatile RecentTracks instance;
     private static Map<String, String> imgUrlsMap = new ImgHashMap<>(10);
     private static final String vDash = "\\|";
     private static final String colon = ":";
     private static final char c = 9899;
     private static final String circle = " " + c + " ";
-    private static final String defImage = "./images/image/songinfo.jpeg";
-    private static final String defImgTag = "<img align=\"middle\" src=\"" + defImage + "\">";
-    private static final String defCover = "./images/image/music-elems.png";
-    private static final String defCoverTag = "<img align=\"middle\" width=\"110\" src=\"" + defCover + "\">";
-    private static String curImage = "./images/image/music-elems.png";
-    private static String curImgTag = "<img align=\"middle\" width=\"110\" src=\"" + curImage + "\">";
-
+    private static final String defImage = imgDir + "songinfo.jpeg";
+    private static final String defImgTag = tagOpen + defImage + tagClose;
+    private static final String defCover = imgDir + "music-elems.png";
+    private static final String defCoverTag = tagOpenW + defCover + tagClose;
+    private static String curImage = defCover;
+    private static String curImgTag = tagOpenW + curImage + tagClose;
     private final TimeZone tz = new GregorianCalendar().getTimeZone();       // Server's time zone
     private final LocalDateTime dt = LocalDateTime.now();                   // time now
     private final ZoneId zone = ZoneId.of(tz.getID());                      // zone id
@@ -38,7 +40,6 @@ public class RecentTracks implements Serializable {
             subString(zOffset, 1, zOffset.indexOf(':'));                //Server offset in hours
     private final String zMOffset =
             subString(zOffset, zOffset.indexOf(':') + 1);               //Server offset in minutes
-
     private final int sysHOffs = Integer.parseInt(zHOffset);                // Server offset in hours
     private final int sysMOffs = Integer.parseInt(zMOffset);                // Server offset in minutes
 
@@ -183,9 +184,7 @@ public class RecentTracks implements Serializable {
         }
 
         Scanner     sc;
-        String      apiKey;
-
-        apiKey = "bb5f88ff636419e6661edcccfd116638";
+        String      apiKey = "bb5f88ff636419e6661edcccfd116638";
         String urlTrack, urlArtist;
         String baseUrl = "http://ws.audioscrobbler.com/2.0/";
         urlArtist = baseUrl.concat("?method=artist.getInfo&" +

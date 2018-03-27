@@ -4,7 +4,7 @@ var host = 'ampleefm.com';
 var port = '9000';
 var _mountPoint = '/live';
 var address = 'http://' + host + ':' + port;
-var mediaUrl = address + _mountPoint;
+var media = address + _mountPoint;
 var jsonUrl = address + '/json.xsl';
 var cur = 'amp';
 var space = String.fromCharCode(160);
@@ -88,15 +88,12 @@ function getTitles() {
 
 }
 
+function toggleList() {
+    $('.onclick-menu-content').toggle();
+}
+
 $(document).ready(function(){
 
-    setTimeout(function () {
-        $('.onclick-menu-content').hide();
-    },
-        2000
-    );
-
-    //language=JQuery
     setTimeout(function () {radioTitle();}, 2000);
     setInterval(function () {radioTitle();}, 15000);
     //
@@ -107,7 +104,7 @@ $(document).ready(function(){
     jP.jPlayer({
         ready: function () {
             $(this).jPlayer("setMedia", {
-                mp3: mediaUrl
+                mp3: media
             });
         },
 
@@ -125,11 +122,10 @@ $(document).ready(function(){
         var isPaused = jP.data().jPlayer.status.paused;
 
         if (isPaused) {
-            //$(".subdiv .jp-controls a").find(fa).removeClass('fa-pause').addClass('fa-play');
             jP.jPlayer("stop");
             jP.jPlayer("clearMedia");
             jP.jPlayer("setMedia", {
-                mp3: mediaUrl
+                mp3: media
             });
         }
     }, 9000);
@@ -142,10 +138,82 @@ $('#toggles').find('li').on('click', function() {
 });
 
 //Toggle play/pause icons
-$(".subdiv .jp-controls a").click(function () {
+$(".jp-controls a").click(function () {
     $(this).find(fa).toggleClass('fa-play fa-pause');
-
 });
+
+var lastAmp, lastChl, lastDnb, last;
+var stream = $(".jp-audio-stream"), subDivs = $(".jp-details, .counter, .onclick-menu");
+//Switching the stations
+function _setMedia(str) {
+    cur = str;
+    switch (str) {
+        case 'chl': {
+            if (!lastChl) {
+                last = true;
+                $('#nowPlayingImg').html('<img width="110" align="middle" ' +
+                    'src="http://loungefm.com.ua/img/logo.png" alt="cover">');
+                lastChl = !lastChl;
+                lastDnb = false;
+                lastAmp = false;
+                media = "http://cast.loungefm.com.ua/chillout128";
+                jP.jPlayer("setMedia", {
+                    mp3: media
+                });
+                stream.width(115);
+                subDivs.hide();
+                break;
+            } else {
+                last = false;
+                break;
+            }
+        }
+        case 'dnb': {
+            if (!lastDnb) {
+                last = true;
+                $('#nowPlayingImg').html('<img width="110" align="middle" ' +
+                    'src="http://loungefm.com.ua/img/logo.png" alt="cover">');
+                lastDnb = !lastDnb;
+                lastChl = false;
+                lastAmp = false;
+                media = "http://cast.loungefm.com.ua/terrace128";
+                jP.jPlayer("setMedia", {
+                    mp3: media
+                });
+                stream.width(115);
+                subDivs.hide();
+                break;
+            } else {
+                last = false;
+                break;
+            }
+        }
+        case 'amp': {
+            if (!lastAmp) {
+                last = true;
+                getCover(true);
+                lastAmp = !lastAmp;
+                lastChl = false;
+                lastDnb = false;
+                media  = address + _mountPoint;
+                jP.jPlayer("setMedia", {
+                    mp3: media
+                });
+                stream.width(473);
+                subDivs.show();
+                break;
+            } else {
+                last = false;
+                break;
+            }
+        }
+    }
+
+    if (last) {
+        $(".jp-controls").find(fa).removeClass('fa-pause').addClass('fa-play');
+    }
+
+}
 
 var canvas, ctx, src, context, analyzer, fbc_array, a_bars, bar_x, bar_width, bar_height;
 
@@ -177,76 +245,4 @@ function frameLooper() {
     }
 }
 
-var lastAmp, lastChl, lastDnb, last;
-var stream = $(".jp-audio-stream"), subDivs = $(".jp-details, .counter, .onclick-menu");
-//Switching the stations
-function _setMedia(str) {
-    cur = str;
-    switch (str) {
-        case 'chl': {
-            if (!lastChl) {
-                last = true;
-                $('#nowPlayingImg').html('<img width="110" align="middle" ' +
-                    'src="http://loungefm.com.ua/img/logo.png" alt="cover">');
-                lastChl = !lastChl;
-                lastDnb = false;
-                lastAmp = false;
-                mediaUrl = "http://cast.loungefm.com.ua/chillout128";
-                jP.jPlayer("setMedia", {
-                    mp3: mediaUrl
-                });
-                stream.width(115);
-                subDivs.hide();
-                break;
-            } else {
-                last = false;
-                break;
-            }
-        }
-        case 'dnb': {
-            if (!lastDnb) {
-                last = true;
-                $('#nowPlayingImg').html('<img width="110" align="middle" ' +
-                    'src="http://loungefm.com.ua/img/logo.png" alt="cover">');
-                lastDnb = !lastDnb;
-                lastChl = false;
-                lastAmp = false;
-                mediaUrl = "http://cast.loungefm.com.ua/terrace128";
-                jP.jPlayer("setMedia", {
-                    mp3: mediaUrl
-                });
-                stream.width(115);
-                subDivs.hide();
-                break;
-            } else {
-                last = false;
-                break;
-            }
-        }
-        case 'amp': {
-            if (!lastAmp) {
-                last = true;
-                getCover(true);
-                lastAmp = !lastAmp;
-                lastChl = false;
-                lastDnb = false;
-                mediaUrl = media;
-                jP.jPlayer("setMedia", {
-                    mp3: mediaUrl
-                });
-                stream.width(473);
-                subDivs.show();
-                break;
-            } else {
-                last = false;
-                break;
-            }
-        }
-    }
-
-        // if (last) {
-        //     $(".jp-controls").find(fa).removeClass('fa-pause').addClass('fa-play');
-        // }
-
-}
 
