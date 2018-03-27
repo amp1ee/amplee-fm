@@ -7,7 +7,7 @@ html {
 }*/
 
 body {
-  background: url('../images/image/bg2_2.jpg') no-repeat !important;
+  background: url('../images/image/bg2_2.png') no-repeat !important;
   -webkit-background-size: cover !important;
   background-size: cover !important;
 }
