@@ -15,15 +15,18 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableAspectJAutoProxy
 @EnableWebMvc
 @ComponentScan({"com.amplee.radio.*"})
-@PropertySource("classpath:/cred.prop")
 public class WebConfig extends WebMvcConfigurerAdapter {
     private final
-    Environment     env;
+    String  url = System.getenv("DB_URL"),
+            usr = System.getenv("DB_USER"),
+            pwd = System.getenv("DB_PWD");
 
+/*
     @Autowired
     public WebConfig(Environment env) {
         this.env = env;
     }
+*/
 
     @Bean
     public InternalResourceViewResolver viewResolver() {
@@ -44,9 +47,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
         driverManagerDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        driverManagerDataSource.setUrl("jdbc:mysql://localhost:3306/users");
-        driverManagerDataSource.setUsername(env.getProperty("usr"));
-        driverManagerDataSource.setPassword(env.getProperty("pwd"));
+        driverManagerDataSource.setUrl(url);
+        driverManagerDataSource.setUsername(usr);
+        driverManagerDataSource.setPassword(pwd);
         return driverManagerDataSource;
     }
 

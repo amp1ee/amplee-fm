@@ -1,6 +1,6 @@
 var tit = '\xa0';
 var jP = $("#jquery_jplayer_1");
-var host = 'ampleefm.com';
+var host = '***REMOVED***';
 var port = '9000';
 var _mountPoint = '/live';
 var address = 'http://' + host + ':' + port;

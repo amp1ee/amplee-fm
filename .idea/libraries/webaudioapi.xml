@@ -6,7 +6,7 @@
       </sourceFilesUrls>
     </properties>
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/web/waa.d.ts" />
+      <***REMOVED*** url="file://$PROJECT_DIR$/web/waa.d.ts" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
