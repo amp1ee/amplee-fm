@@ -152,14 +152,22 @@ a {
 
 #toggles a span {
   color: #807900;
-  background-color: #260202;
-  padding: 4px 12px;
+  padding: 0 0.8em 0 0.8em;
   margin: 0 -6px;
-  border-radius: 0 1.3em;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
+  /*background: ##260202;*/
+  background:
+          linear-gradient(45deg,  transparent 12px, rgba(38, 2, 2, 0.4) 12px),
+
+          linear-gradient(225deg, transparent 12px, rgba(38, 2, 2, 0.4) 12px);
+  background-position: bottom left, top right;
+  -moz-background-size: 100% 50%;
+  -webkit-background-size: 100% 50%;
+  background-size: 100% 50%;
+  background-repeat: no-repeat;
 }
 
 .logo {
@@ -174,10 +182,10 @@ a {
 }
 
 ::selection {
-  background: var(--player-bg-color); /* WebKit/Blink Browsers */
+  background: var(--hover-text-color); /* WebKit/Blink Browsers */
 }
 ::-moz-selection {
-  background: var(--player-bg-color); /* Gecko Browsers */
+  background: var(--hover-text-color); /* Gecko Browsers */
 }
 
 /* The necessities */

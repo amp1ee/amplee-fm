@@ -4,18 +4,16 @@ import com.google.gson.*;
 import org.springframework.web.util.UriUtils;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class RecentTracks implements Serializable {
+    private static volatile RecentTracks instance;
     private static JsonParser jsonParser = new JsonParser();
     private static final String imgDir = "./images/image/";
     private static final String tagOpenW = "<img align=\"middle\" width=\"110\" src=\"";
     private static final String tagOpen = "<img align=\"middle\" src=\"";
     private static final String tagClose = "\">";
-    private static volatile RecentTracks instance;
     private static Map<String, String> imgUrlsMap = new ImgHashMap<>(10);
     private static final String vDash = "\\|";
     private static final String colon = ":";
@@ -77,12 +75,13 @@ public class RecentTracks implements Serializable {
         JsonObject jObj;
         JsonArray jArr;
 
+        // Parsing from LastFM
         String request = baseUrl_lastFM.concat("?method=user.getrecenttracks")
                 .concat("&user=").concat(user)
                 .concat("&api_key=").concat(apiKey_lastFM)
                 .concat("&limit=").concat(String.valueOf(amount))
                 .concat("&format=json");
-        String json = readUrl(request);
+        String json = Util.readUrl(request);
         if (json == null)
             return null;
         element = jsonParser.parse(json);
@@ -92,7 +91,9 @@ public class RecentTracks implements Serializable {
             for (JsonElement e : jArr) {
                 jObj = e.getAsJsonObject();
                 artist = jObj.getAsJsonObject("artist").get(_text).toString();
+                artist = artist.replaceAll(Util.QUOTES_REGEXP, "");
                 track = jObj.get("name").toString();
+                track = track.replaceAll(Util.QUOTES_REGEXP, "");
                 if (artist == null)
                     artist = defArtist;
                 if (track == null)
@@ -191,7 +192,7 @@ public class RecentTracks implements Serializable {
     }
 
     private String parseCovers(String urlPath, boolean isMethodArtist, boolean cover) {
-        String json = readUrl(urlPath);
+        String json = Util.readUrl(urlPath);
         if (json == null)
             return null;
         JsonElement element = jsonParser.parse(json);
@@ -242,31 +243,6 @@ public class RecentTracks implements Serializable {
                 return "<img width=\"110\" align=\"middle\" src=" + coverUrl + ">";
 
         } else return null;
-    }
-
-    private static String readUrl(String urlString) {
-        URL url;
-        InputStream inStream;
-        StringBuilder buffer = null;
-
-        try {
-            url = new URL(urlString);
-            inStream = url.openStream();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inStream))) {
-            buffer = new StringBuilder();
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return (buffer != null) ? buffer.toString() : null;
     }
 
     private String subString(String s, int at, int last) {

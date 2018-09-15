@@ -1,8 +1,6 @@
 package com.amplee.radio.config.application;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -20,13 +18,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     String  url = System.getenv("DB_URL"),
             usr = System.getenv("DB_USER"),
             pwd = System.getenv("DB_PWD");
-
-/*
-    @Autowired
-    public WebConfig(Environment env) {
-        this.env = env;
-    }
-*/
 
     @Bean
     public InternalResourceViewResolver viewResolver() {
