@@ -4,16 +4,13 @@ import com.google.gson.*;
 import org.springframework.web.util.UriUtils;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class RecentTracks implements Serializable {
+    private static JsonParser jsonParser = new JsonParser();
     private static final String imgDir = "./images/image/";
     private static final String tagOpenW = "<img align=\"middle\" width=\"110\" src=\"";
     private static final String tagOpen = "<img align=\"middle\" src=\"";
@@ -30,18 +27,11 @@ public class RecentTracks implements Serializable {
     private static final String defCoverTag = tagOpenW + defCover + tagClose;
     private static String curImage = defCover;
     private static String curImgTag = tagOpenW + curImage + tagClose;
-    private final TimeZone tz = new GregorianCalendar().getTimeZone();       // Server's time zone
-    private final LocalDateTime dt = LocalDateTime.now();                   // time now
-    private final ZoneId zone = ZoneId.of(tz.getID());                      // zone id
-    private final ZonedDateTime zdt = dt.atZone(zone);                      // zonedDateTime
-    private final ZoneOffset zOffs = zdt.getOffset();                       // Server's zone offset
-    private final String zOffset = zOffs.toString();                        //      -//-
-    private final String zHOffset =
-            subString(zOffset, 1, zOffset.indexOf(':'));                //Server offset in hours
-    private final String zMOffset =
-            subString(zOffset, zOffset.indexOf(':') + 1);               //Server offset in minutes
-    private final int sysHOffs = Integer.parseInt(zHOffset);                // Server offset in hours
-    private final int sysMOffs = Integer.parseInt(zMOffset);                // Server offset in minutes
+    private static final String baseUrl_lastFM = "http://ws.audioscrobbler.com/2.0/";
+    private static final String _text = "#text";
+    private final String apiKey_lastFM = System.getenv("LASTFM_KEY");
+    private final String defArtist = "Unknown Artist";
+    private final String defTrack = "Unknown Track";
 
     private RecentTracks() {}
 
@@ -76,85 +66,45 @@ public class RecentTracks implements Serializable {
             curImgTag = get;
     }
 
-    public ArrayList<String> getTitles(Double offset) {
-
+    public ArrayList<String> getTitles() {
+        int amount = 10;
         ArrayList<String> titles = new ArrayList<>();
-        String FILE_NAME = "D:/Programs/Icecast/log/playlist.log";
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(
-                        new FileInputStream(FILE_NAME), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] vDashSplit = line.split(vDash);
-                String[] colonSplit = line.split(colon);
-                String title;
-                try {
-                    title = vDashSplit[3];
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    title = "Unknown Artist - Unknown Name";
-                }
+        String artist;
+        String track;
+        String title;
+        String user = "AmpIy";
+        JsonElement element;
+        JsonObject jObj;
+        JsonArray jArr;
 
-                /* defining hour & min*/
-                String hour = colonSplit[1];
-                hour = subString(hour, 0);
-                int iHour = Integer.parseInt(hour);
-
-                String min = colonSplit[2];
-                min = subString(min, 0);
-                int iMin = Integer.parseInt(min);
-
-                int offsetIntValue = offset.intValue();
-                iHour = iHour + (offsetIntValue - sysHOffs);             // h + clientOffset(h) - serverOffset(h)
-                boolean signum = offsetIntValue >= 0;
-
-                String cliOffs = offset.toString();                         // clientOffset
-                int clientMins = Integer.parseInt(cliOffs.
-                        substring(cliOffs.indexOf('.') + 1));               // clientOffset in percents of an hour
-                if (clientMins == 5) {clientMins = 30;}                     // percents/hour to minutes
-                else if (clientMins == 75) {clientMins = 45;}               //  -//-
-                else if (clientMins == 25) {clientMins = 15;}
-
-                iMin = iMin + (signum ? clientMins : -clientMins - sysMOffs);                      // m (+/-)clientOffset(min) - serverOffset(min)
-
-                if (iHour >= 24) {
-                    iHour -= 24;
-                }
-                if (iHour < 0) {
-                    iHour += 24;
-                }
-
-                if (iMin >= 60) {
-                    iMin -= 60;
-                    iHour += 1;
-                }
-                if (iMin < 0) {
-                    iMin += 60;
-                    iHour -= 1;
-                }
-
-                hour = String.valueOf(iHour);
-                hour = hour.length() == 2 ? hour : "0".concat(hour);
-
-                min = String.valueOf(iMin);
-                min = min.length() == 2 ? min : "0".concat(min);
-
-                String time = hour + colon + min;
-
-                titles.add(time + circle + title);
+        String request = baseUrl_lastFM.concat("?method=user.getrecenttracks")
+                .concat("&user=").concat(user)
+                .concat("&api_key=").concat(apiKey_lastFM)
+                .concat("&limit=").concat(String.valueOf(amount))
+                .concat("&format=json");
+        String json = readUrl(request);
+        if (json == null)
+            return null;
+        element = jsonParser.parse(json);
+        try {
+            jObj = element.getAsJsonObject().getAsJsonObject("recenttracks");
+            jArr = jObj.getAsJsonArray("track");
+            for (JsonElement e : jArr) {
+                jObj = e.getAsJsonObject();
+                artist = jObj.getAsJsonObject("artist").get(_text).toString();
+                track = jObj.get("name").toString();
+                if (artist == null)
+                    artist = defArtist;
+                if (track == null)
+                    track = defTrack;
+                title = artist.concat(" - ").concat(track);
+                titles.add(circle + title);
             }
-        } catch (IOException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
         return titles;
-    }
-
-    private String subString(String s, int at, int last) {
-        boolean isZero = s.charAt(at)=='0';
-        return s.substring(isZero ? at + 1 : at, last);
-    }
-    private String subString(String s, int at) {
-        return subString(s, at, s.length());
     }
 
     public String getImageTag(String title) {
@@ -183,13 +133,11 @@ public class RecentTracks implements Serializable {
             e.printStackTrace();
         }
 
-        Scanner     sc;
-        String      apiKey = "bb5f88ff636419e6661edcccfd116638";
         String urlTrack, urlArtist;
-        String baseUrl = "http://ws.audioscrobbler.com/2.0/";
-        urlArtist = baseUrl.concat("?method=artist.getInfo&" +
+
+        urlArtist = baseUrl_lastFM.concat("?method=artist.getInfo&" +
                 "artist=" + cArtistEnc +
-                "&api_key=" + apiKey + "&format=json");
+                "&api_key=" + apiKey_lastFM + "&format=json");
         urlTrack = urlArtist.replace("=artist", "=track").concat("&track=" + cTrackEnc);
 
         String imgTag = null;
@@ -227,41 +175,26 @@ public class RecentTracks implements Serializable {
     }
 
     private String handleTag(String urlArtist, String urlTrack, boolean cover) {
-        String imgTag = null;
-        try {
-            imgTag = parseJson(urlTrack, false, cover);
-        } catch (Exception e) {
-            e.getMessage();
-        }
+        String imgTag = parseCovers(urlTrack, false, cover);
 
         if (imgTag != null) {
-            if (imgTag.trim().equals("<img align=\"middle\" src=\"\">")) {
-
-                try {
-                    imgTag = parseJson(urlArtist, true, cover);
-                } catch (Exception e) {
-                    e.getMessage();
-                }
-            }
+            if (imgTag.trim().equals("<img align=\"middle\" src=\"\">"))
+                imgTag = parseCovers(urlArtist, true, cover);
         } else {
-            try {
-                imgTag = parseJson(urlArtist, true, cover);
-
-            } catch (Exception e) {
-                e.getMessage();
-            }
+            imgTag = parseCovers(urlArtist, true, cover);
         }
 
-        if (imgTag!=null && !imgTag.trim().equals("<img align=\"middle\" src=\"\">"))
+        if (imgTag != null && !imgTag.trim().equals("<img align=\"middle\" src=\"\">"))
             imgTag = imgTag.replace("https", "http");
 
         return imgTag;
     }
 
-    private String parseJson(String urlPath, boolean isMethodArtist, boolean cover) throws Exception {
-        JsonParser parser = new JsonParser();
+    private String parseCovers(String urlPath, boolean isMethodArtist, boolean cover) {
         String json = readUrl(urlPath);
-        JsonElement element = parser.parse(json);
+        if (json == null)
+            return null;
+        JsonElement element = jsonParser.parse(json);
         JsonObject jObj = element.getAsJsonObject();
         JsonArray imgArr = null;
 
@@ -296,8 +229,6 @@ public class RecentTracks implements Serializable {
         }
     }
 
-    private static final String _text = "#text";
-
     private String checkImgArr(JsonArray imgArr, boolean cover) {
         if (imgArr != null) {
             JsonObject jObj = imgArr.get(0).getAsJsonObject();
@@ -313,17 +244,36 @@ public class RecentTracks implements Serializable {
         } else return null;
     }
 
-    private static String readUrl(String urlString) throws Exception {
+    private static String readUrl(String urlString) {
+        URL url;
+        InputStream inStream;
+        StringBuilder buffer = null;
 
-        URL url = new URL(urlString);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-            StringBuilder buffer = new StringBuilder();
+        try {
+            url = new URL(urlString);
+            inStream = url.openStream();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inStream))) {
+            buffer = new StringBuilder();
             int read;
             char[] chars = new char[1024];
             while ((read = reader.read(chars)) != -1)
                 buffer.append(chars, 0, read);
-
-            return buffer.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return (buffer != null) ? buffer.toString() : null;
+    }
+
+    private String subString(String s, int at, int last) {
+        boolean isZero = s.charAt(at)=='0';
+        return s.substring(isZero ? at + 1 : at, last);
+    }
+    private String subString(String s, int at) {
+        return subString(s, at, s.length());
     }
 }
