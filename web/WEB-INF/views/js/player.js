@@ -94,9 +94,8 @@ function toggleList() {
 
 $(document).ready(function(){
 
-    setTimeout(function () {radioTitle();}, 2000);
     setInterval(function () {radioTitle();}, 15000);
-    //
+
     var dateVar = new Date();
     var timezone = dateVar.getTimezoneOffset()/60 * (-1);
     document.cookie="TZOffset=" + timezone + ";path=/";
@@ -112,11 +111,10 @@ $(document).ready(function(){
         supplied: "mp3",
         useStateClassSkin: true,
         autoBlur: false,
-        smoothPlayBar: true,
         keyEnabled: true
     });
 
-    //initAnalyzer();
+    initAnalyzer();
 
     setInterval(function () {
         var isPaused = jP.data().jPlayer.status.paused;
@@ -235,13 +233,14 @@ function frameLooper() {
     fbc_array = new Uint8Array(analyzer.frequencyBinCount);
     analyzer.getByteFrequencyData(fbc_array);
     ctx.clearRect(0,0,canvas.width, canvas.height);
-    ctx.fillStyle = '#E0B35B';
-    a_bars = 100;
+    //ctx.fillStyle = '#D6A80B';
+    ctx.fillStyle = '#E6E607';
+    a_bars = 300;
     for (var i = 0; i < a_bars; i++) {
-        bar_x = i*3;
-        bar_width = 2;
+        bar_x = i;
+        bar_width = 1;
         bar_height = -(fbc_array[i] / 2);
-        ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
+        ctx.fillRect(bar_x, 0, bar_width, -bar_height);
     }
 }
 
