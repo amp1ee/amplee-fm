@@ -104,24 +104,14 @@ canvas {
   min-height: 110px;
 }
 
-
 #nowPlayingImg {
   content: "";
   display: inline-block;
   text-align: center;
   vertical-align: middle;
   width: 110px;
-  margin: 0;
+  margin: 0 0 0 20px;
   height: 110px;
-}
-
-/*#toggles:nth-child(even) a {
-  background: linear-gradient(180deg, #d1d108, #d6a70b);
-}*/
-#toggles {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
 }
 
 #toggles a {
@@ -203,10 +193,10 @@ canvas {
   display: none;
   position: absolute;
   left: -473px;
+  top: calc(-324px - 110px);
   width: 515px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  top: 16px;
   z-index: 1;
   opacity: 1;
   margin-top: 19px;

@@ -68,9 +68,6 @@ function getCover(isMain) {
                 $('#nowPlayingImg').html(response);
             }
         });
-    } else {
-        // $('#nowPlayingImg').html('<img width="110px" align="middle" src="../skin/image/music-elems.png" alt="cover">');
-
     }
 
 }
@@ -94,8 +91,10 @@ function toggleList() {
 
 $(document).ready(function(){
 
-    setInterval(function () {radioTitle();}, 15000);
-
+    radioTitle();
+    setInterval(function () {
+        radioTitle()
+    }, 15000);
     var dateVar = new Date();
     var timezone = dateVar.getTimezoneOffset()/60 * (-1);
     document.cookie="TZOffset=" + timezone + ";path=/";
