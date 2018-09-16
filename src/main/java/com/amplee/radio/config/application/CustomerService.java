@@ -8,17 +8,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.*;
 import java.sql.*;
 
-@PropertySource("classpath:/cred.prop")
 public class CustomerService {
-    @Autowired
-    Environment                 env;
-    private static final String URL = "jdbc:mysql://localhost:3306/users?useSSL=false&serverTimezone=UTC";
+    private static String URL = System.getenv("DB_URL").concat("?useSSL=false&serverTimezone=UTC");
     @Autowired
     private PasswordEncoder     passwordEncoder;
 
     public int registerCustomer(String userId, String password, String email) {
-        try (Connection c = DriverManager.getConnection
-                (URL, env.getProperty("usr"), env.getProperty("pwd"));
+        try (Connection c = DriverManager.getConnection(URL, System.getenv("DB_USER"), System.getenv("DB_PWD"));
              Statement s = c.createStatement()) {
                ResultSet rs = s.executeQuery("SELECT name FROM users.users");
                while (rs.next()) {
@@ -45,10 +41,8 @@ public class CustomerService {
     }
 
     public String loginCustomer(String userId, String password) {
-        try (Connection conn = DriverManager.getConnection
-                (URL, env.getProperty("usr"), env.getProperty("pwd"));
-             Statement stat = conn.createStatement()
-        ) {
+        try (Connection conn = DriverManager.getConnection(URL, System.getenv("DB_USER"), System.getenv("DB_PWD"));
+             Statement stat = conn.createStatement()) {
             ResultSet rs = stat.executeQuery("SELECT * FROM users.users");
             while (rs.next()) {
                 if (rs.getString("name").equals(userId) && passwordEncoder.matches

@@ -158,11 +158,12 @@ a {
   -moz-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
-  /*background: ##260202;*/
+  transform: scale(2);
+  transform-origin: left bottom;
   background:
-          linear-gradient(45deg,  transparent 12px, rgba(38, 2, 2, 0.4) 12px),
+          linear-gradient(45deg,  transparent 12px, #260202 12px),
 
-          linear-gradient(225deg, transparent 12px, rgba(38, 2, 2, 0.4) 12px);
+          linear-gradient(225deg, transparent 12px, #260202 12px);
   background-position: bottom left, top right;
   -moz-background-size: 100% 50%;
   -webkit-background-size: 100% 50%;
